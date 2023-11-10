@@ -1,0 +1,168 @@
+---
+import Pill from './Pill.astro';
+// Helpers
+import { calcTime, convertMoney } from '../helpers';
+// Config
+import { IMAGE_BASE_URL, POSTER_SIZE, BACKDROP_SIZE } from '../../config';
+// Types
+import type { Crew, Movie } from '../../api/types';
+
+interface Props {
+  data: { movie?: Movie; directors?: Crew[] };
+}
+
+const { data } = Astro.props;
+---
+
+{
+  data.movie ? (
+    <div class='wrapper'>
+      <div class='inner-wrapper'>
+        <div class='thumb-wrapper'>
+          <img
+            class='thumb'
+            src={data.movie.poster_path ? IMAGE_BASE_URL + POSTER_SIZE + data.movie.poster_path : '/no_image.jpg'}
+          />
+          <div class='rating'>{data.movie.vote_average.toFixed(1)}</div>
+        </div>
+        <div class='text-wrapper'>
+          <h2>
+            {data.movie.title} ({data.movie.release_date.split('-')[0]})
+          </h2>
+          <h3>Summary</h3>
+          <p>{data.movie.overview}</p>
+          <div>
+            <div>
+              <h3>Director{data.directors && data.directors.length > 1 ? 's' : ''}</h3>
+              <div>{data.directors && data.directors.map(director => <p>{director.name}</p>)}</div>
+            </div>
+            <div class='movie-data-wrapper'>
+              <h3>Movie data</h3>
+              <Pill extraStyle='margin-left: 0' text={`Running time: ${calcTime(data.movie.runtime)}`} />
+              <Pill text={`Budget: ${convertMoney(data.movie.budget)}`} />
+              <Pill text={`Revenue: ${convertMoney(data.movie.revenue)}`} />
+            </div>
+          </div>
+        </div>
+      </div>
+      <img
+        src={data.movie.backdrop_path ? IMAGE_BASE_URL + BACKDROP_SIZE + data.movie.backdrop_path : '/no_image.jpg'}
+        alt='thumb'
+      />
+    </div>
+  ) : null
+}
+
+<style>
+  .wrapper {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    box-sizing: border-box;
+  }
+
+  .inner-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-width: 80rem;
+    padding: 1rem;
+    margin: 0 auto;
+    z-index: 10;
+    border-radius: 0.75rem;
+    background-color: rgb(39 39 42 / 0.8);
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+    }
+  }
+
+  .thumb-wrapper {
+    position: relative;
+    min-height: 38rem;
+
+    @media (min-width: 768px) {
+      width: 70%;
+    }
+
+    @media (min-width: 960px) {
+      width: 33%;
+    }
+  }
+
+  .rating {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 700;
+    top: 1rem;
+    left: 1rem;
+    border-radius: 9999px;
+    background-color: white;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .text-wrapper {
+    color: white;
+    padding: 1rem 0 1rem 0;
+    text-align: center;
+    width: 100%;
+
+    @media (min-width: 768px) {
+      padding: 0 2rem 0 2rem;
+      text-align: left;
+      width: 66.666667%;
+    }
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 700;
+    padding-bottom: 1rem;
+
+    @media (min-width: 768px) {
+      font-size: 2.25rem;
+      line-height: 2.5rem;
+    }
+  }
+
+  h3 {
+    font-size: 1.125re;
+    line-height: 1.75rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin-bottom: 2rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+
+    @media (min-width: 768px) {
+      font-size: 1.125rem;
+      line-height: 1.75rem/;
+    }
+  }
+
+  .movie-data-wrapper {
+    margin-top: 2rem;
+  }
+
+  img {
+    object-fit: cover;
+    object-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>

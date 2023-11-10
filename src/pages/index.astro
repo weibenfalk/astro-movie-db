@@ -1,0 +1,68 @@
+---
+// Helpers
+import { basicFetch } from '../../api/fetchFunctions';
+import { POPULAR_BASE_URL, IMAGE_BASE_URL, BACKDROP_SIZE } from '../../config';
+// Components
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Spinner from '../components/Spinner.astro';
+// Types
+import type { Movies } from '../../api/types';
+
+const movies = await basicFetch<Movies>(`${POPULAR_BASE_URL}&page=${1}`);
+---
+
+<script src='../scripts/homepage.ts'></script>
+
+<Layout title='Welcome to Astro.'>
+  <main>
+    <Header />
+    <Hero
+      imgUrl={movies.results[0].backdrop_path
+        ? IMAGE_BASE_URL + BACKDROP_SIZE + movies.results[0].backdrop_path
+        : '/no_image.jpg'}
+      title={movies.results[0].title}
+      text={movies.results[0].overview}
+    />
+    <h2 id='grid-header' class='text-header'>Popular Movies</h2>
+    <div class='movie-grid'>
+      {
+        movies.results.map(movie => (
+          <a href={movie.id.toString()}>
+            <movie-card imgUrl={movie.poster_path} title={movie.original_title} />
+          </a>
+        ))
+      }
+    </div>
+    <Spinner />
+  </main>
+</Layout>
+
+<style>
+  main {
+    position: relative;
+    height: 100vh;
+    overflow-y: scroll;
+  }
+
+  .text-header {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  h2 {
+    color: white;
+    padding-left: 1rem;
+  }
+
+  .movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2rem;
+    padding: 0 1rem 0 1rem;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+</style>

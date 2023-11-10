@@ -1,0 +1,56 @@
+---
+interface Props {
+  title?: string;
+}
+
+const { title = 'movie' } = Astro.props;
+---
+
+<div class='wrapper'>
+  <div class='inner-wrapper'>
+    <a href='/'>
+      <span>Home</span>
+    </a>
+    <span class='divider'>|</span>
+    <span class='title truncate'>{title}</span>
+  </div>
+</div>
+
+<style>
+  .wrapper {
+    background-color: rgb(39 39 42 / 1);
+  }
+
+  .inner-wrapper {
+    display: flex;
+    align-items: center;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 1rem;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    color: white;
+  }
+
+  .divider {
+    display: block;
+    padding: 0 0.5rem 0 0.5rem;
+  }
+
+  .title {
+    font-weight: 400;
+  }
+
+  a {
+    text-decoration: none;
+    color: white;
+  }
+
+  a span {
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+</style>

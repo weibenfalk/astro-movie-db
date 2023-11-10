@@ -1,0 +1,65 @@
+---
+import { basicFetch } from '../../api/fetchFunctions';
+import type { Credits, Movie } from '../../api/types';
+// Config
+import { creditsUrl, movieUrl } from '../../config';
+// Components
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Movieinfo from '../components/Movieinfo.astro';
+
+const { movieid } = Astro.params;
+
+const getMovieData = async (id?: string) => {
+  if (!id) return;
+
+  const movieEndpoint: string = movieUrl(id);
+  const creditsEndpoint: string = creditsUrl(id);
+
+  const movie = await basicFetch<Movie>(movieEndpoint);
+  const credits = await basicFetch<Credits>(creditsEndpoint);
+
+  // Get the directors only
+  const directors = credits.crew.filter(member => member.job === 'Director');
+
+  return {
+    movie,
+    directors,
+    cast: credits.cast
+  };
+};
+
+const movieData = await getMovieData(movieid);
+
+const movieInfoProps = {
+  movie: movieData?.movie,
+  directors: movieData?.directors
+};
+---
+
+<Layout title='Welcome to Astro.'>
+  <main>
+    <Header hasSearch={false} />
+    <Breadcrumb title={movieData?.movie.title} />
+    <Movieinfo data={movieInfoProps} />
+    <div class='movie-grid'>
+      {
+        movieData?.cast.map(person => (
+          <movie-card imgUrl={person.profile_path} title={person.name} subtitle={person.character} />
+        ))
+      }
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2rem;
+    padding: 0 1rem 0 1rem;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+</style>

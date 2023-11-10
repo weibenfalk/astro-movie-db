@@ -1,0 +1,84 @@
+---
+interface Props {
+  title: string;
+  text: string;
+  imgUrl: string;
+}
+
+const { title, text, imgUrl } = Astro.props;
+---
+
+<div id="hero" class='wrapper'>
+  <div class='inner-wrapper'>
+    <div class='text-wrapper'>
+      <h3>{title}</h3>
+      <p>{text}</p>
+    </div>
+  </div>
+  <img src={imgUrl} alt='hero-image' />
+</div>
+
+<style>
+  .wrapper {
+    position: relative;
+    width: 100%;
+    height: 40rem;
+  }
+
+  .inner-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column-reverse;
+    height: 100%;
+    max-width: 80rem;
+    margin: 0 auto;
+    z-index: 10;
+    padding-bottom: 3rem;
+    text-align: center;
+
+    @media (min-width: 768px) {
+      text-align: left;
+    }
+  }
+
+  .text-wrapper {
+    color: white;
+    max-width: 42rem;
+    padding: 0 1rem 0 1rem;
+
+    @media (min-width: 1280px) {
+      padding: 0;
+    }
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    line-height: 2rem/;
+    font-weight: 700;
+
+    @media (min-width: 768px) {
+      font-size: 3rem/;
+      line-height: 1;
+    }
+  }
+
+  p {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+
+    @media (min-width: 768px) {
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+    }
+  }
+
+  img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    object-fit: cover;
+    object-position: center;
+  }
+</style>
